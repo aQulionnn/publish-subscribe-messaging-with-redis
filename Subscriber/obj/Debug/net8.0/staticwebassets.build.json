@@ -1,11 +1,12 @@
 {
   "Version": 1,
-  "Hash": "XtlL2o3f0S1p75k6lPB3pSapp8q59A6TrMFSBfJgqzA=",
+  "Hash": "2BpVdrc2nEPXYrqCwb67k6PfyEJkjKBqjQsRONxukJY=",
   "Source": "Subscriber",
   "BasePath": "_content/Subscriber",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [],
-  "Assets": []
+  "Assets": [],
+  "Endpoints": []
 }

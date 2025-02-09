@@ -29,3 +29,15 @@ D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Subscriber\obj\
 D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Subscriber\obj\Debug\net8.0\Subscriber.pdb
 D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Subscriber\obj\Debug\net8.0\Subscriber.genruntimeconfig.cache
 D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Subscriber\obj\Debug\net8.0\ref\Subscriber.dll
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Subscriber\obj\Debug\net8.0\Subscriber.sourcelink.json
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Subscriber\bin\Debug\net8.0\Subscriber.staticwebassets.endpoints.json
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Subscriber\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Subscriber\bin\Debug\net8.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Subscriber\bin\Debug\net8.0\Microsoft.Extensions.Hosting.Abstractions.dll
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Subscriber\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Subscriber\bin\Debug\net8.0\Microsoft.Extensions.ObjectPool.dll
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Subscriber\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Subscriber\bin\Debug\net8.0\Newtonsoft.Json.dll
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Subscriber\bin\Debug\net8.0\System.Net.WebSockets.WebSocketProtocol.dll
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Subscriber\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Subscriber\obj\Debug\net8.0\staticwebassets\msbuild.Subscriber.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
