@@ -2,6 +2,9 @@ using System.Text.Json;
 using AutoMapper;
 using Contracts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Publisher.Dtos;
 using Publisher.Entities;
 using StackExchange.Redis;
@@ -15,12 +18,14 @@ public class ActivityController : ControllerBase
     private readonly IConnectionMultiplexer _redis;
     private readonly AppDbContext _context;
     private readonly IMapper _mapper;
+    private readonly Kernel _kernel;
 
-    public ActivityController(IConnectionMultiplexer redis, AppDbContext context, IMapper mapper)
+    public ActivityController(IConnectionMultiplexer redis, AppDbContext context, IMapper mapper, Kernel kernel)
     {
         _redis = redis;
         _context = context;
         _mapper = mapper;
+        _kernel = kernel;
     }
 
     [HttpPost]
@@ -35,17 +40,25 @@ public class ActivityController : ControllerBase
 
     [HttpPut]
     [Route("{id:int}")]
-    public IActionResult Update([FromRoute] int id, [FromBody] UpdateActivityDto updateActivityDto)
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateActivityDto updateActivityDto)
     {
-        var updatedActivity = _mapper.Map<Activity>(updateActivityDto);
-        updatedActivity.Id = id;
-        _context.Activities.Update(updatedActivity);
-        _context.SaveChanges();
+        var activity = await _context.Activities.FirstOrDefaultAsync(a => a.Id == id);
+        if (activity == null) 
+            return NotFound("Activity not found");
+        
+        var originalActivity = JsonSerializer.Serialize(_mapper.Map<UpdateActivityDto>(activity));
+        
+        _mapper.Map(updateActivityDto, activity);
+        _context.SaveChangesAsync();
 
-        var message = new Message(Guid.NewGuid(), DateTime.UtcNow);
+        var prompt = $"compare these 2 object and write down what has been changed in short 2 sentences: from {originalActivity}, to {JsonSerializer.Serialize(updateActivityDto)}";
+        var summarize = _kernel.CreateFunctionFromPrompt(prompt, executionSettings: new OpenAIPromptExecutionSettings {MaxTokens = 100});
+        var completion = await _kernel.InvokeAsync(summarize);
+        
+        var message = new Message(Guid.NewGuid(), DateTime.UtcNow, completion.ToString());
         string jsonMessage = JsonSerializer.Serialize(message);
         var subscriber = _redis.GetSubscriber();
-        subscriber.Publish("activity", jsonMessage);
+        await subscriber.PublishAsync("activity", jsonMessage);
         
         return Ok("Activity updated");
     }
@@ -56,5 +69,4 @@ public class ActivityController : ControllerBase
         var activities = _context.Activities.ToList();
         return Ok(activities);
     }
-    
 }

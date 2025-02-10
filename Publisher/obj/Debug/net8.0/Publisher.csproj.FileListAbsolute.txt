@@ -54,3 +54,17 @@ D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Publisher\bin\D
 D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Publisher\bin\Debug\net8.0\System.ClientModel.dll
 D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Publisher\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll
 D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Publisher\bin\Debug\net8.0\System.Memory.Data.dll
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Publisher\bin\Debug\net8.0\Azure.AI.OpenAI.dll
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Publisher\bin\Debug\net8.0\Azure.Core.dll
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Publisher\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Publisher\bin\Debug\net8.0\Microsoft.Bcl.HashCode.dll
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Publisher\bin\Debug\net8.0\Microsoft.Extensions.AI.Abstractions.dll
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Publisher\bin\Debug\net8.0\Microsoft.Extensions.VectorData.Abstractions.dll
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Publisher\bin\Debug\net8.0\Microsoft.SemanticKernel.dll
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Publisher\bin\Debug\net8.0\Microsoft.SemanticKernel.Abstractions.dll
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Publisher\bin\Debug\net8.0\Microsoft.SemanticKernel.Connectors.AzureOpenAI.dll
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Publisher\bin\Debug\net8.0\Microsoft.SemanticKernel.Connectors.OpenAI.dll
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Publisher\bin\Debug\net8.0\Microsoft.SemanticKernel.Core.dll
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Publisher\bin\Debug\net8.0\System.Numerics.Tensors.dll
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Publisher\bin\Debug\net8.0\DotNetEnv.dll
+D:\bekasker\projects\test\publish-subscribe-messaging-with-redis\Publisher\bin\Debug\net8.0\Sprache.dll
