@@ -49,7 +49,7 @@ public class ActivityController : ControllerBase
         var originalActivity = JsonSerializer.Serialize(_mapper.Map<UpdateActivityDto>(activity));
         
         _mapper.Map(updateActivityDto, activity);
-        _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
         var prompt = $"compare these 2 object and write down what has been changed in short 2 sentences: from {originalActivity}, to {JsonSerializer.Serialize(updateActivityDto)}";
         var summarize = _kernel.CreateFunctionFromPrompt(prompt, executionSettings: new OpenAIPromptExecutionSettings {MaxTokens = 100});
@@ -57,8 +57,16 @@ public class ActivityController : ControllerBase
         
         var message = new Message(Guid.NewGuid(), DateTime.UtcNow, completion.ToString());
         string jsonMessage = JsonSerializer.Serialize(message);
-        var subscriber = _redis.GetSubscriber();
-        await subscriber.PublishAsync("activity", jsonMessage);
+
+        var outbox = new OutboxMessage
+        {
+            Id = Guid.NewGuid(),
+            CreatedAt = DateTime.UtcNow,
+            Type = "activity",
+            Payload = jsonMessage
+        };
+        await _context.OutboxMessages.AddAsync(outbox);
+        await _context.SaveChangesAsync();
         
         return Ok("Activity updated");
     }

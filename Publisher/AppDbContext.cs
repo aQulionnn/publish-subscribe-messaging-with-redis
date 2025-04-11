@@ -3,12 +3,8 @@ using Publisher.Entities;
 
 namespace Publisher;
 
-public class AppDbContext : DbContext
+public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-    {
-        
-    }
-    
     public DbSet<Activity> Activities { get; set; }
+    public DbSet<OutboxMessage> OutboxMessages { get; set; }
 }

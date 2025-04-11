@@ -2,9 +2,12 @@ using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.SemanticKernel;
 using Publisher;
+using Publisher.BackgroundTasks;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddHostedService<OutboxPublisherJob>();
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost:6379"));
 builder.Services.AddControllers()
@@ -22,9 +25,9 @@ builder.Services.AddSingleton(sp =>
     
     var kernelBuilder = Kernel.CreateBuilder()
         .AddAzureOpenAIChatCompletion(
-            Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT_NAME"),
-            Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT"),
-            Environment.GetEnvironmentVariable("AZURE_OPENAI_API_KEY")
+            Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT_NAME")!,
+            Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")!,
+            Environment.GetEnvironmentVariable("AZURE_OPENAI_API_KEY")!
         );
     
     return kernelBuilder.Build();
