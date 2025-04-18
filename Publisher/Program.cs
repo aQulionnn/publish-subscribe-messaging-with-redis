@@ -1,4 +1,5 @@
 using DotNetEnv;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.SemanticKernel;
 using Publisher;
@@ -7,7 +8,9 @@ using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHostedService<OutboxPublisherJob>();
+builder.Services.AddHangfire(options => options.UseInMemoryStorage());
+builder.Services.AddHangfireServer(options => options.SchedulePollingInterval = TimeSpan.FromSeconds(1));
+builder.Services.AddTransient<OutboxPublisherJob>();
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost:6379"));
 builder.Services.AddControllers()
@@ -42,7 +45,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwaggerUI();
     app.UseSwagger();
+    app.UseHangfireDashboard();
 }
+
+app.Services
+    .GetRequiredService<IRecurringJobManager>()
+    .AddOrUpdate<OutboxPublisherJob>("publish-outbox-messages", job => job.PublishOutboxMessagesAsync(), "0/15 * * * * *");
 
 app.MapControllers();
 
