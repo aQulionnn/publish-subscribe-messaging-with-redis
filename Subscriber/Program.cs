@@ -1,7 +1,10 @@
+using Microsoft.EntityFrameworkCore;
 using Subscriber;
 using Subscriber.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("Database"));
 
 builder.Services.AddSignalR();
 
