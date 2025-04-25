@@ -29,53 +29,47 @@ public class Consumer : BackgroundService
         var subscriber = Connection.GetSubscriber();
         await subscriber.SubscribeAsync(Channel, async (channel, message) =>
         {
-            var json = JsonSerializer.Deserialize<Message>(message);
+            Message json;
+            
+            try
+            {
+                json = JsonSerializer.Deserialize<Message>(message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Invalid message format");
+                return;
+            }
+            
             var messageId = json.Id;
 
-            if (!await IsMessageProcessed(messageId))
+            await using var transaction = await _context.Database.BeginTransactionAsync(stoppingToken);
+            try
             {
-                await SaveMessageToInbox(messageId, message);
-                await ProcessMessage(json);
-                await MarkAsProcessed(messageId);
+                var isProcessed =
+                    await _context.InboxMessages.AnyAsync(x => x.Id == messageId && x.Processed, stoppingToken);
+                if (isProcessed) return;
+
+                await _context.InboxMessages.AddAsync(new InboxMessage
+                {
+                    Id = messageId,
+                    Payload = message
+                }, stoppingToken);
+
+                await _hubContext.Clients.All.SendAsync("RecieveNotification", json, stoppingToken);
+
+                var inboxMessage = await _context.InboxMessages.FirstOrDefaultAsync(x => x.Id == messageId, stoppingToken);
+                inboxMessage.Processed = true;
+
+                await _context.SaveChangesAsync(stoppingToken);
+                await transaction.CommitAsync(stoppingToken);
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync(stoppingToken);
+                _logger.LogError(ex, "Error while processing inbox message");
+                throw;
             }
         });
-    }
-
-    private async Task<bool> IsMessageProcessed(Guid messageId)
-    {
-        return await _context.InboxMessages.AnyAsync(x => x.Id == messageId && x.Processed);
-    }
-
-    private async Task SaveMessageToInbox(Guid messageId, string payload)
-    {
-        await _context.InboxMessages.AddAsync(new InboxMessage
-        {
-            Id = messageId,
-            Payload = payload
-        });
-        await _context.SaveChangesAsync();
-    }
-
-    private async Task ProcessMessage(Message message)
-    {
-        try
-        {
-            await _hubContext.Clients.All.SendAsync("RecieveNotification", message);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.Message);
-            throw;
-        }
-    }
-
-    private async Task MarkAsProcessed(Guid messageId)
-    {
-        var inboxMessage = await _context.InboxMessages.FirstOrDefaultAsync(x => x.Id == messageId);
-        if (inboxMessage is not null)
-        {
-            inboxMessage.Processed = true;
-            await _context.SaveChangesAsync();  
-        }
     }
 }
