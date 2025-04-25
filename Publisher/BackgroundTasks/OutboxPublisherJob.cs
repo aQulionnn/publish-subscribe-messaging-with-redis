@@ -14,15 +14,29 @@ public class OutboxPublisherJob(IServiceProvider provider, IConnectionMultiplexe
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var subscriber = _redis.GetSubscriber();
         
-        var messages = await context.OutboxMessages
-            .Where(x => x.ProcessedAt == null)
-            .OrderBy(x => x.CreatedAt)
-            .Take(10)
-            .ToListAsync();
-
-        foreach (var message in messages)
+        await using var transaction = await context.Database.BeginTransactionAsync();
+        
+        try
         {
-            await subscriber.PublishAsync(RedisChannel.Literal(message.Type), message.Payload);
+            var messages = await context.OutboxMessages
+                .Where(x => x.ProcessedAt == null)
+                .OrderBy(x => x.CreatedAt)
+                .Take(10)
+                .ToListAsync();
+
+            foreach (var message in messages)
+            {
+                await subscriber.PublishAsync(RedisChannel.Literal(message.Type), message.Payload);
+                message.ProcessedAt = DateTime.UtcNow;
+            }
+            
+            await context.SaveChangesAsync();
+            await transaction.CommitAsync();
+        }
+        catch 
+        {
+            await transaction.RollbackAsync();
+            throw;
         }
     }
 }

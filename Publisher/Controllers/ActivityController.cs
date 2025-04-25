@@ -7,6 +7,7 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Publisher.Dtos;
 using Publisher.Entities;
+using Publisher.Utilities;
 using StackExchange.Redis;
 
 namespace Publisher.Controllers;
@@ -60,7 +61,7 @@ public class ActivityController : ControllerBase
 
         var outbox = new OutboxMessage
         {
-            Id = Guid.NewGuid(),
+            Id = MessageIdGenerator.Create(jsonMessage),
             CreatedAt = DateTime.UtcNow,
             Type = "activity",
             Payload = jsonMessage
